@@ -1,31 +1,44 @@
 'use client'
 
 import { memo } from 'react'
-import { useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
-import { Button } from '@/components/ui/button'
 import { selectedIconsAtom } from '@/atoms/selected-icons'
 import type { IconType } from '@/types/icons'
+import { cn } from '@/libs/utils'
 
 const IconButton = memo(({ icon }: { icon: IconType }) => {
-  const setSelectedIcons = useSetAtom(selectedIconsAtom)
+  const [selectedIcons, setSelectedIcons] = useAtom(selectedIconsAtom)
 
-  const handleClick = () => setSelectedIcons((prev) => [...prev, icon.title])
+  const isActive = selectedIcons.includes(icon.title)
+
+  const handleValueChange = (value: string[]) => {
+    setSelectedIcons(value)
+  }
 
   return (
-    <Button
-      variant="outline"
-      className="flex aspect-square h-full w-full flex-col gap-4 text-wrap"
-      onClick={handleClick}
+    <ToggleGroup
+      value={selectedIcons}
+      onValueChange={handleValueChange}
+      type="multiple"
+      className="flex flex-col gap-4"
     >
-      <div
-        dangerouslySetInnerHTML={{
-          __html: icon.svg.replace('<svg', `<svg fill="#${icon.hex}"`),
-        }}
-        className="h-16 w-16"
-      />
-      <span className="text-xs">{icon.title}</span>
-    </Button>
+      <ToggleGroupItem
+        value={icon.title}
+        className={cn('flex aspect-square h-full w-full flex-col', {
+          'bg-accent': isActive,
+        })}
+      >
+        <div
+          dangerouslySetInnerHTML={{
+            __html: icon.svg.replace('<svg', `<svg fill="#${icon.hex}"`),
+          }}
+          className="h-16 w-16"
+        />
+        <span className="text-xs">{icon.title}</span>
+      </ToggleGroupItem>
+    </ToggleGroup>
   )
 })
 
