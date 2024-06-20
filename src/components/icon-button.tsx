@@ -2,28 +2,18 @@
 
 import { memo } from 'react'
 import { useAtom } from 'jotai'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ToggleGroupItem } from '@/components/ui/toggle-group'
 
 import { selectedIconsAtom } from '@/atoms/selected-icons'
 import type { IconType } from '@/types/icons'
 import { cn } from '@/libs/utils'
 
 const IconButton = memo(({ icon }: { icon: IconType }) => {
-  const [selectedIcons, setSelectedIcons] = useAtom(selectedIconsAtom)
+  const [selectedIcons] = useAtom(selectedIconsAtom)
 
   const isActive = selectedIcons.includes(icon.title)
 
-  const handleValueChange = (value: string[]) => {
-    setSelectedIcons(value)
-  }
-
   return (
-    <ToggleGroup
-      value={selectedIcons}
-      onValueChange={handleValueChange}
-      type="multiple"
-      className="flex flex-col gap-4"
-    >
       <ToggleGroupItem
         value={icon.title}
         className={cn('flex aspect-square h-full w-full flex-col', {
@@ -38,7 +28,6 @@ const IconButton = memo(({ icon }: { icon: IconType }) => {
         />
         <span className="text-xs">{icon.title}</span>
       </ToggleGroupItem>
-    </ToggleGroup>
   )
 })
 
